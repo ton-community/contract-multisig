@@ -1,12 +1,13 @@
-# TACT template project
+# Multisig Contract
 
-This project has ready to use TACT compiler, typescript + jest with ton-contract-executor, example how to do tests.
+> **Warning**
+> This contract is not ready
 
-```bash
-yarn test # To test contract
-yarn build # To build contract
-yarn deploy # To deploy contract
-```
+## Features
+
+* 🔐 Simple and secure
+* 🔧 Members are fixed during deployment
+* 🚀 Scalable to any number of operations
 
 ## Licence
 

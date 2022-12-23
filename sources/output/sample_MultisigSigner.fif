@@ -1,0 +1,463 @@
+PROGRAM{
+  DECLPROC __tact_not_null
+  DECLPROC __tact_verify_address
+  DECLPROC __tact_load_address
+  DECLPROC __tact_store_address
+  DECLPROC __gen_write_StateInit
+  DECLPROC __gen_read_StateInit
+  DECLPROC __gen_StateInit_not_null
+  DECLPROC __gen_write_Operation
+  DECLPROC __gen_StateInit_as_optional
+  DECLPROC __gen_read_Operation
+  DECLPROC __gen_read_OpDeploy
+  DECLPROC __gen_write_OpDeployReady
+  DECLPROC __gen_writecell_OpDeployReady
+  DECLPROC __gen_write_MultisigSigner
+  DECLPROC __gen_read_MultisigSigner
+  DECLPROC __gen_load_MultisigSigner
+  DECLPROC __gen_store_MultisigSigner
+  DECLPROC storeBool
+  DECLPROC send
+  DECLPROC __gen_MultisigSigner_init
+  DECLPROC __gen_MultisigSigner_owner
+  83229 DECLMETHOD __gen_get_owner
+  DECLPROC __gen_MultisigSigner_receive_OpDeploy
+  DECLPROC __gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039
+  DECLPROC __gen_MultisigSigner_receive_comment_d2b49fc8a4b6f1b29ab560efb4cd746561d04ee83824fc2d9a475349b1a3aefd
+  DECLPROC recv_internal
+  66268 DECLMETHOD init_MultisigSigner
+  113617 DECLMETHOD supported_interfaces
+  DECLPROC get_abi_ipfs
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  __tact_not_null PROC:<{
+    DUP
+    ISNULL
+    128 THROWIF
+  }>
+  __tact_verify_address PROCINLINE:<{
+    SBITS
+    267 PUSHINT
+    NEQ
+    134 THROWIFNOT
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
+  }>
+  __tact_store_address PROCINLINE:<{
+    STSLICER
+  }>
+  __gen_write_StateInit PROCINLINE:<{
+    s0 s2 XCHG
+    STREF
+    STREF
+  }>
+  __gen_read_StateInit PROCINLINE:<{
+    LDREF
+    LDREF
+    -ROT
+  }>
+  __gen_StateInit_not_null PROC:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    2 UNTUPLE
+  }>
+  __gen_write_Operation PROCINLINE:<{
+    s7 s6 XCHG2
+    __tact_store_address INLINECALLDICT
+    s0 s4 XCHG2
+    STGRAMS
+    s1 s2 XCHG
+    32 STU
+    1 STI
+    8 STU
+    s2 PUSH
+    ISNULL
+    IF:<{
+      s2 POP
+      FALSE
+      ROT
+      1 STI
+    }>ELSE<{
+      TRUE
+      SWAP
+      1 STI
+      s1 s2 XCHG
+      STREF
+    }>
+    OVER
+    ISNULL
+    IF:<{
+      FALSE
+      s2 POP
+      1 STI
+    }>ELSE<{
+      TRUE
+      SWAP
+      1 STI
+      SWAP
+      __gen_StateInit_not_null CALLDICT
+      __gen_write_StateInit INLINECALLDICT
+    }>
+  }>
+  __gen_StateInit_as_optional PROC:<{
+    2 TUPLE
+  }>
+  __gen_read_Operation PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+    SWAP
+    LDGRAMS
+    32 LDU
+    1 LDI
+    8 LDU
+    PUSHNULL
+    SWAP
+    1 LDI
+    SWAP
+    IF:<{
+      NIP
+      LDREF
+    }>
+    PUSHNULL
+    SWAP
+    1 LDI
+    SWAP
+    IF:<{
+      NIP
+      __gen_read_StateInit INLINECALLDICT
+      __gen_StateInit_as_optional CALLDICT
+      SWAP
+    }>
+    7 -ROLL
+  }>
+  __gen_read_OpDeploy PROCINLINE:<{
+    32 LDU
+    SWAP
+    1570915180 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    64 LDU
+    __tact_load_address INLINECALLDICT
+    s1 s2 XCHG
+  }>
+  __gen_write_OpDeployReady PROCINLINE:<{
+    3923668259 PUSHINT
+    ROT
+    32 STU
+    64 STU
+  }>
+  __gen_writecell_OpDeployReady PROCINLINE:<{
+    NEWC
+    SWAP
+    __gen_write_OpDeployReady INLINECALLDICT
+    ENDC
+  }>
+  __gen_write_MultisigSigner PROCINLINE:<{
+    s13 s12 XCHG2
+    __tact_store_address INLINECALLDICT
+    s1 s10 XCHG
+    STDICT
+    s1 s8 XCHG
+    257 PUSHINT
+    STIX
+    s1 s6 XCHG
+    257 PUSHINT
+    STIX
+    s1 s4 XCHG
+    1 STI
+    s1 s2 XCHG
+    1 STI
+    NEWC
+    s6 s1 s7 XCHG3
+    s3 s5 XCHG
+    s1 s8 XCHG
+    __gen_write_Operation INLINECALLDICT
+    ENDC
+    SWAP
+    STREF
+  }>
+  __gen_read_MultisigSigner PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+    SWAP
+    LDDICT
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    1 LDI
+    1 LDI
+    LDREF
+    SWAP
+    CTOS
+    __gen_read_Operation INLINECALLDICT
+    s7 POP
+    s7 s13 XCHG
+    s7 s12 XCHG
+    s7 s11 XCHG
+    s7 s10 XCHG
+    s7 s9 XCHG
+    s7 s8 XCHG
+    6 ROLL
+  }>
+  __gen_load_MultisigSigner PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    __gen_read_MultisigSigner INLINECALLDICT
+    1 13 BLKDROP2
+  }>
+  __gen_store_MultisigSigner PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    13 -ROLL
+    __gen_write_MultisigSigner INLINECALLDICT
+    ENDC
+    c4 POP
+  }>
+  storeBool PROC:<{
+    IFJMP:<{
+      -1 PUSHINT
+      SWAP
+      1 STI
+    }>
+    0 PUSHINT
+    SWAP
+    1 STI
+  }>
+  send PROC:<{
+    NEWC
+    1 PUSHINT
+    SWAP
+    2 STI
+    s0 s7 XCHG2
+    storeBool CALLDICT
+    0 PUSHINT
+    SWAP
+    3 STI
+    s0 s5 XCHG2
+    __tact_store_address INLINECALLDICT
+    s0 s3 XCHG2
+    STGRAMS
+    0 PUSHINT
+    SWAP
+    105 STI
+    s3 PUSH
+    ISNULL
+    NOT
+    s5 PUSH
+    ISNULL
+    NOT
+    OR
+    IF:<{
+      TRUE
+      storeBool CALLDICT
+      NEWC
+      FALSE
+      storeBool CALLDICT
+      FALSE
+      storeBool CALLDICT
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        storeBool CALLDICT
+        s0 s4 XCHG
+        __tact_not_null CALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        storeBool CALLDICT
+      }>
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        storeBool CALLDICT
+        s0 s4 XCHG
+        __tact_not_null CALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        storeBool CALLDICT
+      }>
+      FALSE
+      storeBool CALLDICT
+      s0 s2 XCHG
+      TRUE
+      storeBool CALLDICT
+      s0 s2 XCHG
+      ENDC
+      ROT
+      STREF
+    }>ELSE<{
+      s3 POP
+      s3 POP
+      SWAP
+      FALSE
+      storeBool CALLDICT
+    }>
+    OVER
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+      storeBool CALLDICT
+      SWAP
+      __tact_not_null CALLDICT
+      SWAP
+      STREF
+    }>ELSE<{
+      NIP
+      FALSE
+      storeBool CALLDICT
+    }>
+    ENDC
+    SWAP
+    SENDRAWMSG
+  }>
+  __gen_MultisigSigner_init PROC:<{
+    0 PUSHINT
+    FALSE
+    FALSE
+    s0 s13 XCHG
+    NEWC
+    STREF
+    s9 s1 s13 XCHG3
+    s6 s8 s7 XCHG3
+    s4 s4 XCHG2
+    s5 s1 s5 XCHG3
+    s0 s3 XCHG
+    __gen_write_MultisigSigner INLINECALLDICT
+    ENDC
+  }>
+  __gen_MultisigSigner_owner PROC:<{
+    12 BLKDROP
+  }>
+  __gen_get_owner PROC:<{
+    __gen_load_MultisigSigner INLINECALLDICT
+    __gen_MultisigSigner_owner CALLDICT
+  }>
+  __gen_MultisigSigner_receive_OpDeploy PROC:<{
+    FALSE
+    0 PUSHINT
+    66 PUSHINT
+    s0 s4 XCHG
+    __gen_writecell_OpDeployReady INLINECALLDICT
+    s1 s4 s0 XCHG3
+    PUSHNULL
+    PUSHNULL
+    send CALLDICT
+  }>
+  __gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039 PROC:<{
+  }>
+  __gen_MultisigSigner_receive_comment_d2b49fc8a4b6f1b29ab560efb4cd746561d04ee83824fc2d9a475349b1a3aefd PROC:<{
+  }>
+  recv_internal PROC:<{
+    SAMEALTSAVE
+    0 PUSHINT
+    OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
+    s0 s2 XCHG
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    s2 PUSH
+    s6 s6 XCHG2
+    4 TUPLE
+    __tact_context SETGLOB
+    s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+    }>
+    DUP
+    1570915180 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      __gen_load_MultisigSigner INLINECALLDICT
+      s0 s13 XCHG
+      __gen_read_OpDeploy INLINECALLDICT
+      s2 POP
+      s13 s14 XCHG
+      s12 s13 XCHG
+      s11 s12 XCHG
+      s10 s11 XCHG
+      s9 s10 XCHG
+      s8 s9 XCHG
+      s7 s8 XCHG
+      s6 s7 XCHG
+      s5 s6 XCHG
+      s4 s5 XCHG
+      s3 s4 XCHG
+      s3 s0 s0 XCHG3
+      __gen_MultisigSigner_receive_OpDeploy CALLDICT
+      __gen_store_MultisigSigner INLINECALLDICT
+    }>
+    0 EQINT
+    IF:<{
+      HASHSU
+      DUP
+      15687661268003540618347676322063149294643333469463580674027607086437424345145 PUSHINT
+      EQUAL
+      IFJMP:<{
+        DROP
+        __gen_load_MultisigSigner INLINECALLDICT
+        __gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039 CALLDICT
+        __gen_store_MultisigSigner INLINECALLDICT
+        RETALT
+      }>
+      95304833461150998551680938695215259420369392599809157084150557039425243819773 PUSHINT
+      EQUAL
+      IFJMP:<{
+        __gen_load_MultisigSigner INLINECALLDICT
+        __gen_MultisigSigner_receive_comment_d2b49fc8a4b6f1b29ab560efb4cd746561d04ee83824fc2d9a475349b1a3aefd CALLDICT
+        __gen_store_MultisigSigner INLINECALLDICT
+        RETALT
+      }>
+    }>ELSE<{
+      DROP
+    }>
+    130 THROW
+  }>
+  init_MultisigSigner PROC:<{
+    __gen_MultisigSigner_init CALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    86142586315491086060343270784266291122 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d636a3552507a6f6a5278744a434c3577567854596b556e5877464542577a5a507a594163624a375936775255} PUSHSLICE
+  }>
+}END>c

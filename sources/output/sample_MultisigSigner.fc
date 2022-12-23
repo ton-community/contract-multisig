@@ -1,0 +1,302 @@
+forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
+
+global (int, slice, int, slice) __tact_context;
+global cell __tact_context_sys;
+
+() __tact_verify_address(slice address) inline {
+    throw_unless(134, address.slice_bits() != 267);
+}
+
+(slice, slice) __tact_load_address(slice cs) inline {
+    slice raw = cs~load_msg_addr();
+    __tact_verify_address(raw);
+    return (cs, raw);
+}
+
+builder __tact_store_address(builder b, slice address) inline {
+    __tact_verify_address(address);
+    b = b.store_slice(address);
+    return b;
+}
+
+forall X0, X1 -> tuple __tact_tuple_create_2((X0, X1) v) asm "2 TUPLE";
+
+forall X0, X1 -> (X0, X1) __tact_tuple_destroy_2(tuple v) asm "2 UNTUPLE";
+
+builder __gen_write_StateInit(builder build_0, (cell, cell) v) inline {
+    var (v'code, v'data) = v;
+    build_0 = store_ref(build_0, v'code);
+    build_0 = store_ref(build_0, v'data);
+    return build_0;
+}
+
+(slice, ((cell, cell))) __gen_read_StateInit(slice sc_0) inline {
+    var v'code = sc_0~load_ref();
+    var v'data = sc_0~load_ref();
+    return (sc_0, (v'code, v'data));
+}
+
+((cell, cell)) __gen_StateInit_not_null(tuple v) {
+    throw_if(128, null?(v));
+    return __tact_tuple_destroy_2(v);
+}
+
+builder __gen_write_Operation(builder build_0, (slice, int, int, int, int, cell, tuple) v) inline {
+    var (v'to, v'value, v'timeout, v'bounce, v'mode, v'body, v'stateInit) = v;
+    build_0 = __tact_store_address(build_0, v'to);
+    build_0 = store_coins(build_0, v'value);
+    build_0 = store_uint(build_0, v'timeout, 32);
+    build_0 = store_int(build_0, v'bounce, 1);
+    build_0 = store_uint(build_0, v'mode, 8);
+    if (null?(v'body)) {
+        build_0 = store_int(build_0, false, 1);
+    } else {
+        build_0 = store_int(build_0, true, 1);
+        build_0 = store_ref(build_0, v'body);
+    }
+    if (null?(v'stateInit)) {
+        build_0 = store_int(build_0, false, 1);
+    } else {
+        build_0 = store_int(build_0, true, 1);
+        build_0 = __gen_write_StateInit(build_0, __gen_StateInit_not_null(v'stateInit));
+    }
+    return build_0;
+}
+
+tuple __gen_StateInit_as_optional(((cell, cell)) v) {
+    return __tact_tuple_create_2(v);
+}
+
+(slice, ((slice, int, int, int, int, cell, tuple))) __gen_read_Operation(slice sc_0) inline {
+    var v'to = sc_0~__tact_load_address();
+    var v'value = sc_0~load_coins();
+    var v'timeout = sc_0~load_uint(32);
+    var v'bounce = sc_0~load_int(1);
+    var v'mode = sc_0~load_uint(8);
+    var v'body = null();
+    if (sc_0~load_int(1)) {
+        v'body = sc_0~load_ref();
+    }
+    var v'stateInit = null();
+    if (sc_0~load_int(1)) {
+        v'stateInit = __gen_StateInit_as_optional(sc_0~__gen_read_StateInit());
+    }
+    return (sc_0, (v'to, v'value, v'timeout, v'bounce, v'mode, v'body, v'stateInit));
+}
+
+(slice, ((int, slice))) __gen_read_OpDeploy(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 1570915180);
+    var v'queryId = sc_0~load_uint(64);
+    var v'requestor = sc_0~__tact_load_address();
+    return (sc_0, (v'queryId, v'requestor));
+}
+
+builder __gen_write_OpDeployReady(builder build_0, (int) v) inline {
+    var (v'queryId) = v;
+    build_0 = store_uint(build_0, 3923668259, 32);
+    build_0 = store_uint(build_0, v'queryId, 64);
+    return build_0;
+}
+
+cell __gen_writecell_OpDeployReady((int) v) inline {
+    return __gen_write_OpDeployReady(begin_cell(), v).end_cell();
+}
+
+builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int, int, (slice, int, int, int, int, cell, tuple)) v) inline {
+    var (v'owner, v'members, v'requiredWeight, v'weight, v'ready, v'executed, (v'operation'to, v'operation'value, v'operation'timeout, v'operation'bounce, v'operation'mode, v'operation'body, v'operation'stateInit)) = v;
+    build_0 = __tact_store_address(build_0, v'owner);
+    build_0 = store_dict(build_0, v'members);
+    build_0 = store_int(build_0, v'requiredWeight, 257);
+    build_0 = store_int(build_0, v'weight, 257);
+    build_0 = store_int(build_0, v'ready, 1);
+    build_0 = store_int(build_0, v'executed, 1);
+    var build_1 = begin_cell();
+    build_1 = __gen_write_Operation(build_1, (v'operation'to, v'operation'value, v'operation'timeout, v'operation'bounce, v'operation'mode, v'operation'body, v'operation'stateInit));
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+(slice, ((slice, cell, int, int, int, int, (slice, int, int, int, int, cell, tuple)))) __gen_read_MultisigSigner(slice sc_0) inline {
+    var v'owner = sc_0~__tact_load_address();
+    var v'members = sc_0~load_dict();
+    var v'requiredWeight = sc_0~load_int(257);
+    var v'weight = sc_0~load_int(257);
+    var v'ready = sc_0~load_int(1);
+    var v'executed = sc_0~load_int(1);
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'operation = sc_1~__gen_read_Operation();
+    return (sc_0, (v'owner, v'members, v'requiredWeight, v'weight, v'ready, v'executed, v'operation));
+}
+
+(slice, cell, int, int, int, int, (slice, int, int, int, int, cell, tuple)) __gen_load_MultisigSigner() inline {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_MultisigSigner();
+}
+
+() __gen_store_MultisigSigner((slice, cell, int, int, int, int, (slice, int, int, int, int, cell, tuple)) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = __gen_write_MultisigSigner(b, v);
+    set_data(b.end_cell());
+}
+
+builder storeBool(builder $s, int $value) impure {
+    if ($value) {
+        return store_int($s, (- 1), 1);
+    } else {
+        return store_int($s, 0, 1);
+    }
+}
+
+() send((int, slice, int, int, cell, cell, cell) $params) impure {
+    var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
+    builder $b = begin_cell();
+    $b = store_int($b, 1, 2);
+    $b = storeBool($b, $params'bounce);
+    $b = store_int($b, 0, 3);
+    $b = __tact_store_address($b, $params'to);
+    $b = store_coins($b, $params'value);
+    $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
+    if (((~ null?($params'code)) | (~ null?($params'data)))) {
+        $b = storeBool($b, true);
+        builder $bc = begin_cell();
+        $bc = storeBool($bc, false);
+        $bc = storeBool($bc, false);
+        if ((~ null?($params'code))) {
+            $bc = storeBool($bc, true);
+            $bc = store_ref($bc, __tact_not_null($params'code));
+        } else {
+            $bc = storeBool($bc, false);
+        }
+        if ((~ null?($params'data))) {
+            $bc = storeBool($bc, true);
+            $bc = store_ref($bc, __tact_not_null($params'data));
+        } else {
+            $bc = storeBool($bc, false);
+        }
+        $bc = storeBool($bc, false);
+        $b = storeBool($b, true);
+        $b = store_ref($b, end_cell($bc));
+    } else {
+        $b = storeBool($b, false);
+    }
+    cell $body = $params'body;
+    if ((~ null?($body))) {
+        $b = storeBool($b, true);
+        $b = store_ref($b, __tact_not_null($body));
+    } else {
+        $b = storeBool($b, false);
+    }
+    cell $c = end_cell($b);
+    send_raw_message($c, $params'mode);
+}
+
+cell __gen_MultisigSigner_init(cell sys', slice $owner, cell $members, int $requiredWeight, (slice, int, int, int, int, cell, tuple) $operation) {
+    var (($operation'to, $operation'value, $operation'timeout, $operation'bounce, $operation'mode, $operation'body, $operation'stateInit)) = $operation;
+    var (($self'owner, $self'members, $self'requiredWeight, $self'weight, $self'ready, $self'executed, ($self'operation'to, $self'operation'value, $self'operation'timeout, $self'operation'bounce, $self'operation'mode, $self'operation'body, $self'operation'stateInit))) = (null(), null(), null(), 0, false, false, null());
+    $self'owner = $owner;
+    $self'members = $members;
+    $self'requiredWeight = $requiredWeight;
+    ($self'operation'to, $self'operation'value, $self'operation'timeout, $self'operation'bounce, $self'operation'mode, $self'operation'body, $self'operation'stateInit) = ($operation'to, $operation'value, $operation'timeout, $operation'bounce, $operation'mode, $operation'body, $operation'stateInit);
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_MultisigSigner(b', ($self'owner, $self'members, $self'requiredWeight, $self'weight, $self'ready, $self'executed, ($self'operation'to, $self'operation'value, $self'operation'timeout, $self'operation'bounce, $self'operation'mode, $self'operation'body, $self'operation'stateInit)));
+    return b'.end_cell();
+}
+
+slice __gen_MultisigSigner_owner((slice, cell, int, int, int, int, (slice, int, int, int, int, cell, tuple)) $self) impure {
+    var (($self'owner, $self'members, $self'requiredWeight, $self'weight, $self'ready, $self'executed, ($self'operation'to, $self'operation'value, $self'operation'timeout, $self'operation'bounce, $self'operation'mode, $self'operation'body, $self'operation'stateInit))) = $self;
+    return $self'owner;
+}
+
+_ __gen_get_owner() method_id(83229) {
+    var self = __gen_load_MultisigSigner();
+    var res = __gen_MultisigSigner_owner(self);
+    return res;
+}
+
+(((slice, cell, int, int, int, int, (slice, int, int, int, int, cell, tuple))), ()) __gen_MultisigSigner_receive_OpDeploy((slice, cell, int, int, int, int, (slice, int, int, int, int, cell, tuple)) $self, (int, slice) $msg) impure {
+    var ($self'owner, $self'members, $self'requiredWeight, $self'weight, $self'ready, $self'executed, ($self'operation'to, $self'operation'value, $self'operation'timeout, $self'operation'bounce, $self'operation'mode, $self'operation'body, $self'operation'stateInit)) = $self;
+    var ($msg'queryId, $msg'requestor) = $msg;
+    send((false, $msg'requestor, 0, (64 + 2), __gen_writecell_OpDeployReady(($msg'queryId)), null(), null()));
+    return (($self'owner, $self'members, $self'requiredWeight, $self'weight, $self'ready, $self'executed, ($self'operation'to, $self'operation'value, $self'operation'timeout, $self'operation'bounce, $self'operation'mode, $self'operation'body, $self'operation'stateInit)), ());
+}
+
+((slice, cell, int, int, int, int, (slice, int, int, int, int, cell, tuple)), ()) __gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039((slice, cell, int, int, int, int, (slice, int, int, int, int, cell, tuple)) $self) impure {
+    var ($self'owner, $self'members, $self'requiredWeight, $self'weight, $self'ready, $self'executed, ($self'operation'to, $self'operation'value, $self'operation'timeout, $self'operation'bounce, $self'operation'mode, $self'operation'body, $self'operation'stateInit)) = $self;
+    return (($self'owner, $self'members, $self'requiredWeight, $self'weight, $self'ready, $self'executed, ($self'operation'to, $self'operation'value, $self'operation'timeout, $self'operation'bounce, $self'operation'mode, $self'operation'body, $self'operation'stateInit)), ());
+}
+
+((slice, cell, int, int, int, int, (slice, int, int, int, int, cell, tuple)), ()) __gen_MultisigSigner_receive_comment_d2b49fc8a4b6f1b29ab560efb4cd746561d04ee83824fc2d9a475349b1a3aefd((slice, cell, int, int, int, int, (slice, int, int, int, int, cell, tuple)) $self) impure {
+    var ($self'owner, $self'members, $self'requiredWeight, $self'weight, $self'ready, $self'executed, ($self'operation'to, $self'operation'value, $self'operation'timeout, $self'operation'bounce, $self'operation'mode, $self'operation'body, $self'operation'stateInit)) = $self;
+    return (($self'owner, $self'members, $self'requiredWeight, $self'weight, $self'ready, $self'executed, ($self'operation'to, $self'operation'value, $self'operation'timeout, $self'operation'bounce, $self'operation'mode, $self'operation'body, $self'operation'stateInit)), ());
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    ;; Receive OpDeploy message
+    if (op == 1570915180) {
+        var self = __gen_load_MultisigSigner();
+        var msg = in_msg~__gen_read_OpDeploy();
+        self~__gen_MultisigSigner_receive_OpDeploy(msg);
+        __gen_store_MultisigSigner(self);
+        return ();
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "YES" message
+        if (text_op == 0x22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039) {
+            var self = __gen_load_MultisigSigner();
+            self~__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039();
+            __gen_store_MultisigSigner(self);
+            return ();
+        }
+        
+        ;; Receive "NO" message
+        if (text_op == 0xd2b49fc8a4b6f1b29ab560efb4cd746561d04ee83824fc2d9a475349b1a3aefd) {
+            var self = __gen_load_MultisigSigner();
+            self~__gen_MultisigSigner_receive_comment_d2b49fc8a4b6f1b29ab560efb4cd746561d04ee83824fc2d9a475349b1a3aefd();
+            __gen_store_MultisigSigner(self);
+            return ();
+        }
+    }
+    
+    throw(130);
+}
+
+cell init_MultisigSigner(cell sys', slice owner, cell members, int requiredWeight, (slice, int, int, int, int, cell, tuple) operation) method_id {
+    return __gen_MultisigSigner_init(sys', owner, members, requiredWeight, operation);
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.ownable"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://Qmcj5RPzojRxtJCL5wVxTYkUnXwFEBWzZPzYAcbJ7Y6wRU";
+}

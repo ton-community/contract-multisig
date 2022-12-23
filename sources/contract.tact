@@ -1,36 +1,146 @@
-message Add {
-    amount: Int as uint32;
+import "@stdlib/ownable";
+
+struct Operation {
+    to: Address;
+    value: Int as coins;
+    timeout: Int as uint32;
+    bounce: Bool;
+    mode: Int as uint8;
+    body: Cell?;
+    stateInit: StateInit?;
 }
 
-contract SampleTactContract {
+message OpRequest {
+    queryId: Int as uint64;
+    operation: Operation;
+}
 
+message OpDeploy {
+    queryId: Int as uint64;
+    requestor: Address;
+}
+
+message OpDeployReady {
+    queryId: Int as uint64;
+}
+
+message OpExecute {
+    queryId: Int as uint64;
+    operation: Operation;
+}
+
+contract MultisigSigner with Ownable {
+
+    // Multisig Address
     owner: Address;
-    counter: Int as uint32;
 
-    init(owner: Address) {
+    // Multisig members
+    members: map[Address]Int;
+    requiredWeight: Int;
+
+    // Progress
+    weight: Int = 0;
+    ready: Bool = false;
+    executed: Bool = false;
+
+    // Request
+    operation: Operation;
+    
+    init(owner: Address, members: map[Address]Int, requiredWeight: Int, operation: Operation) {
         self.owner = owner;
-        self.counter = 0;
+        self.members = members;
+        self.requiredWeight = requiredWeight;
+        self.operation = operation;
     }
 
-    fun add(v: Int) {
-        
+    //
+    // Deployment
+    //
+
+    receive(msg: OpDeploy) {
+        send(SendParameters{
+            bounce: false,
+            to: msg.requestor,
+            value: 0,
+            mode: SendRemainingValue + SendIgnoreErrors, 
+            body: abi.pack_cell(OpDeployReady{queryId: msg.queryId})
+        });
+    }
+
+    //
+    // Voting
+    //
+
+    receive("YES") {
+
+    }
+
+    receive("NO") {
+
+    }
+}
+
+contract Multisig {
+
+    members: map[Address]Int;
+    totalWeight: Int;
+    requiredWeight: Int;
+
+    init(members: map[Address]Int, totalWeight: Int, requiredWeight: Int) {
+        self.members = members;
+        self.totalWeight = totalWeight;
+        self.requiredWeight = requiredWeight;
+    }
+
+    //
+    // Request new transaction
+    //
+
+    receive(msg: OpRequest) {
+
         // Check sender
         let ctx: Context = context();
-        require(ctx.sender == self.owner, "Invalid sender");
+        let weight: Int? = self.members.get(ctx.sender);
+        require(weight != null && weight!! > 0, "Not a member");
         
-        // Update counter
-        self.counter = (self.counter + v);
+        // Create message
+        let init: StateInit = initOf MultisigSigner(myAddress(), self.members, self.requiredWeight, msg.operation);
+        let address: Address = contractAddress(init);
+        send(SendParameters{
+            value: 0, 
+            to: address, 
+            mode: SendRemainingValue + SendIgnoreErrors, 
+            bounce: true,
+            code: init.code,
+            data: init.data
+        });
     }
 
-    receive(msg: Add) {
-        self.add(msg.amount);
+    //
+    // Execute transaction
+    //
+
+    receive(msg: OpExecute) {
+
     }
 
-    receive("increment") {
-        self.add(1);
+    //
+    // Get Methods
+    //
+
+    get fun member(address: Address): Int? {
+        return self.members.get(address);
     }
 
-    get fun counter(): Int {
-        return self.counter;
+    get fun members(): map[Address]Int {
+        return self.members;
+    }
+
+    get fun totalWeight(): Int {
+        return self.totalWeight;
+    }
+
+    get fun requiredWeight(): Int {
+        return self.requiredWeight;
     }
 }
